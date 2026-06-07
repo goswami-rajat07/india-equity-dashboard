@@ -333,3 +333,162 @@ def get_meta(ticker: str):
         "latest_revenue": latest.get("revenue"),
         "market_cap": latest.get("market_cap"),
     }
+
+# Portfolio holdings (illustrative — qty in shares, avg_cost in ₹, prev_close in ₹)
+PORTFOLIO = {
+    "POLICYBZR":  {"qty": 350,  "avg_cost": 1200,  "prev_close": 1742},
+    "ZOMATO":     {"qty": 1200, "avg_cost": 95,    "prev_close": 200},
+    "TCS":        {"qty": 50,   "avg_cost": 3200,  "prev_close": 4102},
+    "DIXON":      {"qty": 40,   "avg_cost": 18000, "prev_close": 22840},
+    "HDFCBANK":   {"qty": 150,  "avg_cost": 1400,  "prev_close": 1442},
+    "RELIANCE":   {"qty": 100,  "avg_cost": 2200,  "prev_close": 2375},
+    "CCAVENUE":   {"qty": 200,  "avg_cost": 120,   "prev_close": 152},
+    "BHARTIARTL": {"qty": 200,  "avg_cost": 850,   "prev_close": 1072},
+    "MAZDOCK":    {"qty": 75,   "avg_cost": 3000,  "prev_close": 2086},
+    "WAAREE":     {"qty": 80,   "avg_cost": 2800,  "prev_close": 3160},
+    "LT":         {"qty": 60,   "avg_cost": 3200,  "prev_close": 3724},
+    "KAYNES":     {"qty": 120,  "avg_cost": 2480,  "prev_close": 3972},
+    "ATHENERGY":  {"qty": 800,  "avg_cost": 321,   "prev_close": 318},
+    "MM":         {"qty": 120,  "avg_cost": 3500,  "prev_close": 4132},
+    "IREDA":      {"qty": 500,  "avg_cost": 185,   "prev_close": 128},
+}
+
+def _compute_signal(hist):
+    """Compute Buy/Hold/Sell signal from historical rows."""
+    if not hist:
+        return {"label": "Hold", "score": 50, "reasons": []}
+
+    rev_growth = None
+    for r in reversed(hist):
+        if r.get("revenue_growth") is not None:
+            rev_growth = r["revenue_growth"] * 100
+            break
+
+    npm_latest = hist[-1]["pat_margin"] * 100 if hist[-1].get("pat_margin") is not None else None
+    npm_prev = hist[-3]["pat_margin"] * 100 if len(hist) >= 3 and hist[-3].get("pat_margin") is not None else None
+    profitable = hist[-1]["net_profit"] > 0
+
+    pe_latest = None
+    for r in reversed(hist):
+        if r.get("valuation_multiple") is not None:
+            pe_latest = r["valuation_multiple"]
+            break
+
+    score = 50
+    reasons = []
+    g = rev_growth or 0
+
+    if g >= 25:
+        score += 18
+        reasons.append(f"Revenue compounding {g:.0f}% YoY")
+    elif g >= 12:
+        score += 8
+        reasons.append(f"Steady {g:.0f}% revenue growth")
+    elif g < 5:
+        score -= 12
+        reasons.append(f"Growth decelerating to {g:.0f}%")
+
+    if npm_latest is not None and npm_prev is not None:
+        if npm_latest - npm_prev > 1.5:
+            score += 14
+            reasons.append(f"Margins expanding ({npm_prev:.1f}% → {npm_latest:.1f}%)")
+        elif npm_latest - npm_prev < -1:
+            score -= 10
+            reasons.append("Margins compressing")
+
+    if not profitable:
+        score -= 16
+        reasons.append("Still loss-making — watch path to profit")
+    else:
+        score += 6
+
+    if pe_latest is not None:
+        if pe_latest > 90:
+            score -= 16
+            reasons.append(f"Rich valuation at {pe_latest:.0f}x earnings")
+        elif pe_latest > 55:
+            score -= 6
+            reasons.append(f"Premium {pe_latest:.0f}x multiple")
+        elif pe_latest < 28 and profitable:
+            score += 12
+            reasons.append(f"Reasonable {pe_latest:.0f}x multiple")
+
+    score = max(0, min(100, round(score)))
+    label = "Hold"
+    if score >= 64:
+        label = "Buy"
+    elif score <= 42:
+        label = "Sell"
+    return {"label": label, "score": score, "reasons": reasons[:3]}
+
+
+def get_portfolio_overview():
+    """Return all stocks with summary data for the portfolio overview table."""
+    result = []
+    for ticker, meta in COMPANY_META.items():
+        rows = TRACKER_DATA.get(ticker, [])
+        hist = [r for r in rows if not r["estimated"]]
+        holding = PORTFOLIO.get(ticker, {"qty": 100, "avg_cost": 1000, "prev_close": None})
+        if not hist:
+            continue
+
+        recent = hist[-7:] if len(hist) > 7 else hist
+        fys = [r["year"] for r in recent]
+        rev = [r["revenue"] for r in recent]
+        np_ = [r["net_profit"] for r in recent]
+        price_hist = [r["share_price"] for r in recent]
+        npm = [round(r["pat_margin"] * 100, 2) if r["pat_margin"] is not None else None for r in recent]
+        shares = recent[-1]["shares_cr"] or 1
+        pe = [r["valuation_multiple"] for r in recent]
+        eps = [round(r["net_profit"] / r["shares_cr"], 2) if r["shares_cr"] and r["shares_cr"] > 0 else None for r in recent]
+        rev_growth = [round(r["revenue_growth"] * 100, 1) if r["revenue_growth"] is not None else None for r in recent]
+
+        latest_price = hist[-1]["share_price"] or 0
+        prev_close = holding.get("prev_close") or latest_price
+
+        result.append({
+            "ticker": ticker,
+            "name": meta["name"],
+            "sector": meta["sector"],
+            "multiple_type": meta["multiple_type"],
+            "shares": shares,
+            "latest_price": latest_price,
+            "prev_close": prev_close,
+            "qty": holding["qty"],
+            "avg_cost": holding["avg_cost"],
+            "fys": fys,
+            "rev": rev,
+            "np": np_,
+            "price_history": price_hist,
+            "npm": npm,
+            "pe": pe,
+            "eps": eps,
+            "rev_growth": rev_growth,
+            "signal": _compute_signal(hist),
+        })
+    return result
+
+
+def get_detail_series(ticker: str):
+    """Return full historical array data for the detail view charts."""
+    rows = TRACKER_DATA.get(ticker.upper(), [])
+    hist = [r for r in rows if not r["estimated"]]
+    if not hist:
+        return None
+    meta = COMPANY_META.get(ticker.upper(), {})
+    shares = hist[-1]["shares_cr"] or 1
+    return {
+        "ticker": ticker.upper(),
+        "name": meta.get("name", ticker),
+        "sector": meta.get("sector", ""),
+        "multiple_type": meta.get("multiple_type", "P/E"),
+        "shares": shares,
+        "fys": [r["year"] for r in hist],
+        "rev": [r["revenue"] for r in hist],
+        "np": [r["net_profit"] for r in hist],
+        "npm": [round(r["pat_margin"] * 100, 2) if r["pat_margin"] is not None else None for r in hist],
+        "pe": [r["valuation_multiple"] for r in hist],
+        "eps": [round(r["net_profit"] / r["shares_cr"], 2) if r["shares_cr"] and r["shares_cr"] > 0 else None for r in hist],
+        "rev_growth": [round(r["revenue_growth"] * 100, 1) if r["revenue_growth"] is not None else None for r in hist],
+        "price_history": [r["share_price"] for r in hist],
+    }

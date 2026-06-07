@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "India Equity Dashboard",
-  description: "Stock analysis dashboard for India-listed equities",
+  title: "Ledger · Portfolio Tracker",
+  description: "India equity portfolio tracker — fundamentals, projections, and signals",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#080d1a] text-[#e8edf7] antialiased">
-        {children}
-      </body>
+    <html lang="en" className={`${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

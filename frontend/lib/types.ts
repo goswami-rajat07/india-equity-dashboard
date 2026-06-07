@@ -1,19 +1,50 @@
-export interface FinancialRow {
-  year: string;
-  revenue: number | null;
-  net_profit: number | null;
-  margin_pct: number | null;
-  valuation_multiple: number | null;
-  share_price: number | null;
-  estimated: boolean;
+export interface Signal {
+  label: "Buy" | "Hold" | "Sell";
+  score: number;
+  reasons: string[];
 }
 
-export interface EarningsGuidance {
-  quarter: string;
-  date: string;
-  source: string;
-  highlights: string[];
-  tone: "optimistic" | "positive" | "neutral" | "cautious" | "negative";
+export interface PortfolioStock {
+  ticker: string;
+  name: string;
+  sector: string;
+  multiple_type: string;
+  shares: number;
+  latest_price: number;
+  prev_close: number;
+  qty: number;
+  avg_cost: number;
+  fys: string[];
+  rev: number[];
+  np: number[];
+  price_history: (number | null)[];
+  npm: (number | null)[];
+  pe: (number | null)[];
+  eps: (number | null)[];
+  rev_growth: (number | null)[];
+  signal: Signal;
+  // computed client-side
+  invested?: number;
+  value?: number;
+  pnl?: number;
+  pnl_pct?: number;
+  day_chg?: number;
+}
+
+export interface DetailSeries {
+  ticker: string;
+  name: string;
+  sector: string;
+  multiple_type: string;
+  shares: number;
+  fys: string[];
+  rev: number[];
+  np: number[];
+  npm: (number | null)[];
+  pe: (number | null)[];
+  eps: (number | null)[];
+  rev_growth: (number | null)[];
+  price_history: (number | null)[];
 }
 
 export interface ProjectionRow {
@@ -28,43 +59,4 @@ export interface ProjectionRow {
   price_bull: number | null;
   price_bear: number | null;
   valuation_multiple: number | null;
-}
-
-export interface Projections {
-  ticker: string;
-  base: ProjectionRow[];
-  bull: ProjectionRow[];
-  bear: ProjectionRow[];
-  assumptions: string[];
-}
-
-export interface StockMeta {
-  ticker: string;
-  name: string;
-  sector: string;
-  exchange: string;
-  multiple_type: string;
-  latest_price: number | null;
-  latest_revenue: number | null;
-  market_cap: number | null;
-}
-
-export interface TickerInfo {
-  ticker: string;
-  name: string;
-  sector: string;
-}
-
-export interface AIRecommendation {
-  ticker: string;
-  signal: "BUY" | "ACCUMULATE" | "HOLD" | "WATCH" | "AVOID";
-  signal_rationale: string;
-  target_price_1yr: number | null;
-  upside_pct: number | null;
-  key_positives: string[];
-  key_risks: string[];
-  watchlist_triggers: string[];
-  analyst_note: string;
-  _source?: string;
-  error?: string;
 }

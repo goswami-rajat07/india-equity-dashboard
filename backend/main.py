@@ -40,3 +40,15 @@ def get_meta(ticker: str):
     if not meta:
         raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found")
     return meta
+
+@app.get("/api/portfolio")
+def get_portfolio():
+    from data.tracker_data import get_portfolio_overview
+    return get_portfolio_overview()
+
+@app.get("/api/detail/{ticker}")
+def get_detail(ticker: str):
+    from data.tracker_data import get_detail_series, COMPANY_MAP
+    if ticker.upper() not in COMPANY_MAP:
+        raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found")
+    return get_detail_series(ticker)
