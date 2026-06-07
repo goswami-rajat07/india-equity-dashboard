@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import type { PortfolioStock, DetailSeries } from "@/lib/types";
 import { Overview } from "@/components/Overview";
@@ -12,11 +13,18 @@ interface DetailData {
 }
 
 export default function Page() {
+  const router = useRouter();
   const [stocks, setStocks] = useState<PortfolioStock[]>([]);
   const [detail, setDetail] = useState<DetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [backendDown, setBackendDown] = useState(false);
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
 
   useEffect(() => {
     api.portfolio()
@@ -52,8 +60,21 @@ export default function Page() {
           <span className="brand-name">Ledger</span>
           <span className="brand-sub">Portfolio Tracker</span>
         </div>
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span className="qtr-tag">Q4 FY25 · Jun 2025</span>
+          <button
+            onClick={handleLogout}
+            style={{
+              border: "1px solid var(--line)", background: "var(--card)",
+              color: "var(--muted)", fontSize: 12, fontWeight: 500,
+              padding: "5px 13px", borderRadius: 999, cursor: "pointer",
+              fontFamily: "var(--font-sans)", transition: ".12s",
+            }}
+            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "var(--ink)"; (e.target as HTMLElement).style.borderColor = "#D4D6DC"; }}
+            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = "var(--muted)"; (e.target as HTMLElement).style.borderColor = "var(--line)"; }}
+          >
+            Sign out
+          </button>
         </div>
       </header>
 
