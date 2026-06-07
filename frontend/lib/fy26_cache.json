@@ -1,5 +1,8 @@
 {
-  "_note": "FY26 actuals scraped once from screener.in on 2026-06-08. Do not re-scrape; update manually from screener.in for future fiscal years.",
+  "_note": "FY26 actuals + FY20-25 history scraped once from screener.in on 2026-06-08. Do not re-scrape; update manually from screener.in for future fiscal years.",
+  "_historical_scraped_date": "2026-06-08",
+  "_warning_VBL_FY26": "FY26 VBL revenue 6574 Cr is far below FY25 21685 Cr — likely partial year or standalone. FY20-FY25 consolidated data looks correct.",
+  "_warning_JWL_FY26": "FY26 JWL revenue 2539 Cr is below FY25 3871 Cr (−34%). Screener flagged 'challenging market conditions'. Verify consolidated.",
   "_warning_CCAVENUE": "Screener returned 'AvenuesAI Ltd' (rev 7585 Cr, price 14) — likely the wrong company for CCAVENUE ticker. FY26E row kept in data.ts.",
   "_warning_DIXON": "FY26 revenue 48873 Cr is LOWER than FY25 (58770 Cr). Possible standalone vs consolidated mismatch. Verify at screener.in/company/DIXON/consolidated/",
   "_warning_IREDA": "FY26 revenue 8309 Cr vs FY26E estimate of 11480 Cr — significant miss. May be standalone vs consolidated.",
