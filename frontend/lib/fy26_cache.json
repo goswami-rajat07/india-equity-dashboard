@@ -1,0 +1,111 @@
+{
+  "_note": "FY26 actuals scraped once from screener.in on 2026-06-08. Do not re-scrape; update manually from screener.in for future fiscal years.",
+  "_warning_CCAVENUE": "Screener returned 'AvenuesAI Ltd' (rev 7585 Cr, price 14) — likely the wrong company for CCAVENUE ticker. FY26E row kept in data.ts.",
+  "_warning_DIXON": "FY26 revenue 48873 Cr is LOWER than FY25 (58770 Cr). Possible standalone vs consolidated mismatch. Verify at screener.in/company/DIXON/consolidated/",
+  "_warning_IREDA": "FY26 revenue 8309 Cr vs FY26E estimate of 11480 Cr — significant miss. May be standalone vs consolidated.",
+  "_warning_VBL": "FY26 revenue 6574 Cr seems low for VBL consolidated (expected ~20000 Cr). Likely standalone figure.",
+  "scraped_date": "2026-06-08",
+  "source": "screener.in",
+  "stocks": {
+    "ATHERENERG": {
+      "fy": "FY26", "already_in_data_ts": true,
+      "revenue_cr": 3672, "net_profit_cr": -517, "margin_pct": -14.1,
+      "eps": null, "shares_cr": 38.31, "share_price": 1033, "market_cap_cr": 39599
+    },
+    "BHARTIARTL": {
+      "fy": "FY26",
+      "revenue_cr": 210973, "net_profit_cr": 33823, "margin_pct": 16.0,
+      "eps": 43.81, "shares_cr_screener": 771.9, "share_price": 1798, "market_cap_cr": 1387337
+    },
+    "CCAVENUE": {
+      "fy": "FY26", "status": "SKIPPED — wrong company returned",
+      "screener_company": "AvenuesAI Ltd",
+      "revenue_cr": 7585, "net_profit_cr": 153, "margin_pct": 2.02,
+      "eps": 0.44, "shares_cr_screener": 349, "share_price": 14
+    },
+    "CDSL": {
+      "fy": "FY26", "new_stock": true,
+      "revenue_cr": 1145, "net_profit_cr": 455, "margin_pct": 39.7,
+      "eps": 21.82, "shares_cr_screener": 20.85, "share_price": 1218, "market_cap_cr": 25395
+    },
+    "COFORGE": {
+      "fy": "FY26", "new_stock": true,
+      "revenue_cr": 16403, "net_profit_cr": 1745, "margin_pct": 10.6,
+      "eps": 46.33, "shares_cr_screener": 37.65, "share_price": 1436, "market_cap_cr": 54065
+    },
+    "DIXON": {
+      "fy": "FY26",
+      "revenue_cr": 48873, "net_profit_cr": 1644, "margin_pct": 3.36,
+      "eps": 236.61, "shares_cr_screener": 6.95, "share_price": 11432, "market_cap_cr": 79452
+    },
+    "ETERNAL": {
+      "fy": "FY26",
+      "revenue_cr": 54364, "net_profit_cr": 366, "margin_pct": 0.67,
+      "eps": 0.38, "shares_cr_screener": 919, "share_price": 256, "market_cap_cr": 235264
+    },
+    "GOLDBEES": { "fy": "FY26", "note": "ETF — no financial data" },
+    "IDFCFIRSTB": {
+      "fy": "FY26", "new_stock": true,
+      "revenue_cr": 40549, "net_profit_cr": 1611, "margin_pct": 3.97,
+      "eps": 1.87, "shares_cr_screener": 861.5, "share_price": 72.4, "market_cap_cr": 62300
+    },
+    "IREDA": {
+      "fy": "FY26",
+      "revenue_cr": 8309, "net_profit_cr": 1873, "margin_pct": 22.5,
+      "eps": 6.67, "shares_cr_screener": 280.9, "share_price": 123, "market_cap_cr": 34674
+    },
+    "JWL": {
+      "fy": "FY26", "new_stock": true,
+      "revenue_cr": 2539, "net_profit_cr": 182, "margin_pct": 7.17,
+      "eps": 4.27, "shares_cr_screener": 42.7, "share_price": 278, "market_cap_cr": 11871
+    },
+    "KAYNES": {
+      "fy": "FY26",
+      "revenue_cr": 3626, "net_profit_cr": 364, "margin_pct": 10.04,
+      "eps": 54.28, "shares_cr_screener": 6.7, "share_price": 3122, "market_cap_cr": 20927
+    },
+    "M&M": {
+      "fy": "FY26",
+      "revenue_cr": 198639, "net_profit_cr": 18622, "margin_pct": 9.37,
+      "eps": 137.50, "shares_cr_screener": 135.4, "share_price": 3040, "market_cap_cr": 378095
+    },
+    "MAZDOCK": {
+      "fy": "FY26",
+      "revenue_cr": 12840, "net_profit_cr": 2436, "margin_pct": 18.97,
+      "eps": 60.38, "shares_cr_screener": 40.33, "share_price": 2423, "market_cap_cr": 97743
+    },
+    "MON100": { "fy": "FY26", "note": "ETF — no financial data" },
+    "NIFTYBEES": { "fy": "FY26", "note": "ETF — no financial data" },
+    "POLICYBZR": {
+      "fy": "FY26",
+      "revenue_cr": 6794, "net_profit_cr": 670, "margin_pct": 9.86,
+      "eps": 14.48, "shares_cr_screener": 46.3, "share_price": 1534, "market_cap_cr": 70982
+    },
+    "RELIANCE": {
+      "fy": "FY26",
+      "revenue_cr": 1055780, "net_profit_cr": 95754, "margin_pct": 9.07,
+      "eps": 59.69, "shares_cr_screener": 1352, "share_price": 1291, "market_cap_cr": 1747050
+    },
+    "TECHD": {
+      "fy": "FY26", "new_stock": true,
+      "company_name_screener": "TechDefence Labs Solutions Limited",
+      "revenue_cr": 52, "net_profit_cr": 14, "margin_pct": 26.92,
+      "eps": 18.77, "shares_cr_screener": 0.748, "share_price": 624, "market_cap_cr": 467
+    },
+    "VBL": {
+      "fy": "FY26", "new_stock": true, "warning": "Revenue may be standalone; verify consolidated",
+      "revenue_cr": 6574, "net_profit_cr": 879, "margin_pct": 13.4,
+      "eps": 2.58, "shares_cr_screener": 340.65, "share_price": 523, "market_cap_cr": 176996
+    },
+    "WAAREEENER": {
+      "fy": "FY26",
+      "revenue_cr": 26537, "net_profit_cr": 3884, "margin_pct": 14.6,
+      "eps": 129.02, "shares_cr_screener": 30.08, "share_price": 3053, "market_cap_cr": 87820
+    },
+    "WAAREERTL": {
+      "fy": "FY26", "new_stock": true,
+      "revenue_cr": 3331, "net_profit_cr": 483, "margin_pct": 14.5,
+      "eps": 46.25, "shares_cr_screener": 10.43, "share_price": 970, "market_cap_cr": 10124
+    }
+  }
+}
