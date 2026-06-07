@@ -18,8 +18,6 @@ export default function Page() {
   const [detail, setDetail] = useState<DetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [backendDown, setBackendDown] = useState(false);
-
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
@@ -29,7 +27,6 @@ export default function Page() {
   useEffect(() => {
     api.portfolio()
       .then((s) => setStocks(s))
-      .catch(() => setBackendDown(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -79,22 +76,13 @@ export default function Page() {
       </header>
 
       <main className="main">
-        {backendDown && (
-          <div style={{
-            background: "#FFF3CD", border: "1px solid #FFEAA7", borderRadius: 8,
-            padding: "12px 16px", marginBottom: 20, fontSize: 13, color: "#856404",
-          }}>
-            Backend not reachable at <code>http://localhost:8000</code>. Start the FastAPI server and refresh.
-          </div>
-        )}
-
         {loading && (
           <div style={{ textAlign: "center", padding: "80px 0", color: "var(--muted)", fontSize: 14 }}>
             Loading portfolio…
           </div>
         )}
 
-        {!loading && !backendDown && (
+        {!loading && (
           detailLoading ? (
             <div style={{ textAlign: "center", padding: "80px 0", color: "var(--muted)", fontSize: 14 }}>
               Loading…

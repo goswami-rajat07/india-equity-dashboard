@@ -1,9 +1,7 @@
 import type { PortfolioStock, DetailSeries, ProjectionRow } from "@/lib/types";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { cache: "no-store" });
+  const res = await fetch(path, { cache: "no-store" });
   if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
   return res.json() as Promise<T>;
 }
