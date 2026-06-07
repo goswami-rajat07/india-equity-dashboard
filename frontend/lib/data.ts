@@ -43,7 +43,7 @@ export const COMPANY_META: Record<string, { name: string; sector: string; multip
   NIFTYBEES:  { name: "NiftyBees ETF",         sector: "ETF – Nifty 50",             multiple_type: "N/A" },
   POLICYBZR:  { name: "PolicyBazaar",          sector: "Insurance Tech",             multiple_type: "P/E" },
   RELIANCE:   { name: "Reliance",              sector: "Conglomerate",               multiple_type: "P/E" },
-  TECHD:      { name: "Tech Domain",           sector: "Technology",                 multiple_type: "P/E" },
+  TECHD:      { name: "Tech Defense",           sector: "Defence / Technology",       multiple_type: "P/E" },
   VBL:        { name: "Varun Beverages",       sector: "FMCG / Beverages",           multiple_type: "P/E" },
   WAAREEENER: { name: "Waaree Energy",         sector: "Solar Energy",               multiple_type: "P/E" },
   WAAREERTL:  { name: "Waaree Renewable",      sector: "Renewable EPC",              multiple_type: "P/E" },
