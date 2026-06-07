@@ -2,7 +2,7 @@ const inr = new Intl.NumberFormat("en-IN");
 const inr1 = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 export function crore(v: number | null | undefined): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   const a = Math.abs(v);
   const sign = v < 0 ? "−" : "";
   if (a >= 100000) return sign + "₹" + inr1.format(a / 100000) + " L Cr";
@@ -10,7 +10,7 @@ export function crore(v: number | null | undefined): string {
 }
 
 export function rupees(v: number | null | undefined, dp?: number): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   const sign = v < 0 ? "−" : "";
   const a = Math.abs(v);
   if (dp != null) {
@@ -20,7 +20,7 @@ export function rupees(v: number | null | undefined, dp?: number): string {
 }
 
 export function money(v: number | null | undefined): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   const sign = v < 0 ? "−" : "";
   const a = Math.abs(v);
   if (a >= 1e7) return sign + "₹" + inr1.format(a / 1e7) + " Cr";
@@ -29,17 +29,17 @@ export function money(v: number | null | undefined): string {
 }
 
 export function pct(v: number | null | undefined, dp = 1): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + "%";
 }
 
 export function pctPlain(v: number | null | undefined, dp = 1): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   return v.toFixed(dp) + "%";
 }
 
 export function mult(v: number | null | undefined): string {
-  if (v == null || isNaN(v)) return "—";
+  if (v == null || isNaN(v)) return "N/A";
   return v.toFixed(1) + "×";
 }
 

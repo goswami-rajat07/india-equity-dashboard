@@ -13,8 +13,8 @@ export async function GET() {
     const recent = hist.slice(-7);
     const last = hist[hist.length - 1];
     const shares = last.shares_cr ?? 1;
-    const latest_price = last.share_price ?? 0;
-    const prev_close = holding.prev_close ?? latest_price;
+    const latest_price = last.share_price ?? null;
+    const prev_close = holding.prev_close ?? latest_price ?? null;
 
     result.push({
       ticker,
