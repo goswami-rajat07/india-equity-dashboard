@@ -21,10 +21,18 @@
       "eps": 43.81, "shares_cr_screener": 771.9, "share_price": 1798, "market_cap_cr": 1387337
     },
     "CCAVENUE": {
-      "fy": "FY26", "status": "SKIPPED — wrong company returned",
+      "fy": "FY26", "status": "UPDATED — confirmed AvenuesAI Ltd (NSE: CCAVENUE)",
       "screener_company": "AvenuesAI Ltd",
-      "revenue_cr": 7585, "net_profit_cr": 153, "margin_pct": 2.02,
-      "eps": 0.44, "shares_cr_screener": 349, "share_price": 14
+      "revenue_cr": 8116, "net_profit_cr": 295, "margin_pct": 3.6,
+      "eps": 0.80, "shares_cr_actual": 368.75, "share_price": 14, "market_cap_cr": 5162,
+      "history_FY20_FY25": {
+        "FY20": {"rev": 633, "np": 108, "margin_pct": 17.1, "eps": 0.32},
+        "FY21": {"rev": 676, "np": 70,  "margin_pct": 10.4, "eps": 0.22},
+        "FY22": {"rev": 1294, "np": 84, "margin_pct": 6.5,  "eps": 0.26},
+        "FY23": {"rev": 1962, "np": 136,"margin_pct": 6.9,  "eps": 0.42},
+        "FY24": {"rev": 3150, "np": 156,"margin_pct": 5.0,  "eps": 0.45},
+        "FY25": {"rev": 3993, "np": 236,"margin_pct": 5.9,  "eps": 0.65}
+      }
     },
     "CDSL": {
       "fy": "FY26", "new_stock": true,
@@ -58,9 +66,11 @@
       "eps": 6.67, "shares_cr_screener": 280.9, "share_price": 123, "market_cap_cr": 34674
     },
     "JWL": {
-      "fy": "FY26", "new_stock": true,
-      "revenue_cr": 2539, "net_profit_cr": 182, "margin_pct": 7.17,
-      "eps": 4.27, "shares_cr_screener": 42.7, "share_price": 278, "market_cap_cr": 11871
+      "fy": "FY26",
+      "note": "Revenue corrected by user: FY25=3963 Cr, FY26=2916 Cr. NP estimated at 7.2% margin.",
+      "revenue_cr_FY25": 3963, "revenue_cr_FY26": 2916,
+      "net_profit_cr_estimated": 210, "margin_pct_estimated": 7.2,
+      "shares_cr_actual": 42.7, "share_price": 278, "market_cap_cr": 11761
     },
     "KAYNES": {
       "fy": "FY26",
@@ -96,9 +106,10 @@
       "eps": 18.77, "shares_cr_screener": 0.748, "share_price": 624, "market_cap_cr": 467
     },
     "VBL": {
-      "fy": "FY26", "new_stock": true, "warning": "Revenue may be standalone; verify consolidated",
-      "revenue_cr": 6574, "net_profit_cr": 879, "margin_pct": 13.4,
-      "eps": 2.58, "shares_cr_screener": 340.65, "share_price": 523, "market_cap_cr": 176996
+      "fy": "FY26",
+      "note": "Revenue corrected by user to 22693 Cr (scraper had picked up Q4FY26=6574 Cr). NP estimated at 14.1% margin (FY25 level); update when audited annual published.",
+      "revenue_cr": 22693, "net_profit_cr_estimated": 3200, "margin_pct_estimated": 14.1,
+      "shares_cr_actual": 341.0, "share_price": 523, "market_cap_cr": 178343
     },
     "WAAREEENER": {
       "fy": "FY26",
