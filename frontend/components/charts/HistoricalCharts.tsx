@@ -31,23 +31,30 @@ function ChartCard({ title, sub, children }: { title: string; sub: string; child
   );
 }
 
-export function HistoricalCharts({ data }: { data: FinancialRow[] }) {
+interface Props {
+  data: FinancialRow[];
+  meta?: { multiple_type?: string; name?: string; ticker?: string; sector?: string; exchange?: string; latest_price?: number | null; latest_revenue?: number | null; market_cap?: number | null } | null;
+}
+
+export function HistoricalCharts({ data, meta }: Props) {
+  const multipleLabel = meta?.multiple_type ?? "P/E";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
       {/* Revenue */}
-      <ChartCard title="Annual Revenue" sub="₹ Crore · FY2020 – FY2025E">
+      <ChartCard title="Annual Revenue" sub="₹ Crore · lighter bar = estimate">
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 10 }}>
             <CartesianGrid vertical={false} stroke="#1e2d50" />
-            <XAxis dataKey="fy" {...axisProps} />
-            <YAxis {...axisProps} tickFormatter={(v) => `₹${v}`} />
+            <XAxis dataKey="year" {...axisProps} />
+            <YAxis {...axisProps} tickFormatter={(v) => v >= 1000 ? `₹${(v/1000).toFixed(0)}K` : `₹${v}`} />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(v: number) => [`₹${v.toLocaleString()} Cr`, "Revenue"]}
+              formatter={(v: unknown) => [`₹${Number(v).toLocaleString()} Cr`, "Revenue"]}
             />
             <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
               {data.map((d) => (
-                <Cell key={d.fy} fill={d.estimated ? "#22d3a060" : "#22d3a0"} />
+                <Cell key={d.year} fill={d.estimated ? "#22d3a060" : "#22d3a0"} />
               ))}
             </Bar>
           </BarChart>
@@ -59,16 +66,21 @@ export function HistoricalCharts({ data }: { data: FinancialRow[] }) {
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 10 }}>
             <CartesianGrid vertical={false} stroke="#1e2d50" />
-            <XAxis dataKey="fy" {...axisProps} />
-            <YAxis {...axisProps} tickFormatter={(v) => `₹${v}`} />
+            <XAxis dataKey="year" {...axisProps} />
+            <YAxis {...axisProps} tickFormatter={(v) => v >= 1000 ? `₹${(v/1000).toFixed(0)}K` : `₹${v}`} />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(v: number) => [`₹${v.toLocaleString()} Cr`, "Net P&L"]}
+              formatter={(v: unknown) => [`₹${Number(v).toLocaleString()} Cr`, "Net P&L"]}
             />
             <ReferenceLine y={0} stroke="#1e2d50" strokeWidth={1.5} />
             <Bar dataKey="net_profit" radius={[4, 4, 0, 0]}>
               {data.map((d) => (
-                <Cell key={d.fy} fill={d.estimated ? "#f43f5e60" : "#f43f5e"} />
+                <Cell
+                  key={d.year}
+                  fill={(d.net_profit ?? 0) >= 0
+                    ? (d.estimated ? "#22d3a060" : "#22d3a0")
+                    : (d.estimated ? "#f43f5e60" : "#f43f5e")}
+                />
               ))}
             </Bar>
           </BarChart>
@@ -80,11 +92,11 @@ export function HistoricalCharts({ data }: { data: FinancialRow[] }) {
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 10 }}>
             <CartesianGrid vertical={false} stroke="#1e2d50" />
-            <XAxis dataKey="fy" {...axisProps} />
+            <XAxis dataKey="year" {...axisProps} />
             <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(v: number) => [`${v.toFixed(1)}%`, "Net Margin"]}
+              formatter={(v: unknown) => [`${Number(v).toFixed(1)}%`, "Net Margin"]}
             />
             <ReferenceLine y={0} stroke="#22d3a0" strokeDasharray="4 3" strokeWidth={1} />
             <Line
@@ -94,38 +106,42 @@ export function HistoricalCharts({ data }: { data: FinancialRow[] }) {
               strokeWidth={2.5}
               dot={{ fill: "#fbbf24", r: 4, strokeWidth: 0 }}
               activeDot={{ r: 6 }}
+              connectNulls
             />
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
 
-      {/* P/S Multiple + Share Price combined */}
-      <ChartCard title="Valuation &amp; Share Price" sub="P/S multiple (left) · Share price ₹ (right) · Pre-IPO unlisted">
+      {/* Valuation + Share Price */}
+      <ChartCard
+        title={`Valuation & Share Price`}
+        sub={`${multipleLabel} multiple (left) · Share price ₹ (right) · Pre-listing = no data`}
+      >
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart
-            data={data.map((d, i) => ({
-              ...d,
-              ps: i === data.length - 1 ? 3.5 : null,
-              price: i === data.length - 1 ? 310 : null,
-            }))}
-            margin={{ top: 4, right: 4, bottom: 0, left: 10 }}
-          >
+          <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 10 }}>
             <CartesianGrid vertical={false} stroke="#1e2d50" />
-            <XAxis dataKey="fy" {...axisProps} />
-            <YAxis {...axisProps} tickFormatter={(v) => `${v}×`} yAxisId="ps" />
-            <YAxis {...axisProps} tickFormatter={(v) => `₹${v}`} yAxisId="price" orientation="right" />
+            <XAxis dataKey="year" {...axisProps} />
+            <YAxis {...axisProps} tickFormatter={(v) => `${v}×`} yAxisId="mult" />
+            <YAxis {...axisProps} tickFormatter={(v) => `₹${v >= 1000 ? (v/1000).toFixed(1)+"K" : v}`} yAxisId="price" orientation="right" />
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
-              formatter={(v: number | null, name: string) =>
-                v == null
-                  ? ["Unlisted", name]
-                  : name === "ps"
-                  ? [`${v}×`, "P/S"]
-                  : [`₹${v}`, "Share Price"]
-              }
+              formatter={(v: unknown, name: unknown) => {
+                const n = Number(v);
+                const key = String(name);
+                if (!v || n === 0) return ["Unlisted / N/A", key];
+                return key === "valuation_multiple" ? [`${n}×`, multipleLabel] : [`₹${n.toLocaleString()}`, "Share Price"];
+              }}
             />
-            <Bar dataKey="ps" yAxisId="ps" fill="#a78bfa" radius={[4, 4, 0, 0]} name="ps" />
-            <Bar dataKey="price" yAxisId="price" fill="#60a5fa" radius={[4, 4, 0, 0]} name="price" />
+            <Bar dataKey="valuation_multiple" yAxisId="mult" fill="#a78bfa" radius={[4, 4, 0, 0]} name="valuation_multiple">
+              {data.map((d) => (
+                <Cell key={d.year} fill={d.estimated ? "#a78bfa60" : "#a78bfa"} />
+              ))}
+            </Bar>
+            <Bar dataKey="share_price" yAxisId="price" fill="#60a5fa" radius={[4, 4, 0, 0]} name="share_price">
+              {data.map((d) => (
+                <Cell key={d.year} fill={d.estimated ? "#60a5fa60" : "#60a5fa"} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </ChartCard>

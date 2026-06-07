@@ -1,20 +1,11 @@
 export interface FinancialRow {
-  fy: string;
-  year: number;
-  revenue: number;
-  net_profit: number;
-  ebitda: number;
-  margin_pct: number;
-  estimated?: boolean;
-}
-
-export interface StockPriceRow {
-  fy: string;
-  year: number;
-  price: number | null;
-  listed: boolean;
-  ipo_price?: number;
-  ipo_date?: string;
+  year: string;
+  revenue: number | null;
+  net_profit: number | null;
+  margin_pct: number | null;
+  valuation_multiple: number | null;
+  share_price: number | null;
+  estimated: boolean;
 }
 
 export interface EarningsGuidance {
@@ -26,12 +17,17 @@ export interface EarningsGuidance {
 }
 
 export interface ProjectionRow {
-  fy: string;
-  year: number;
-  revenue: number;
-  net_profit: number;
-  margin_pct: number;
-  share_price: number;
+  year: string;
+  revenue_base: number;
+  revenue_bull: number;
+  revenue_bear: number;
+  margin_base: number | null;
+  margin_bull: number | null;
+  margin_bear: number | null;
+  price_base: number | null;
+  price_bull: number | null;
+  price_bear: number | null;
+  valuation_multiple: number | null;
 }
 
 export interface Projections {
@@ -43,22 +39,20 @@ export interface Projections {
 }
 
 export interface StockMeta {
+  ticker: string;
   name: string;
-  exchange: string;
   sector: string;
-  industry: string;
-  founded: number;
-  headquarters: string;
-  ipo_date: string;
-  ipo_price: number;
-  market_cap_cr: number;
-  shares_outstanding_cr: number;
-  promoters: string[];
-  description: string;
-  current_price: number;
-  day_change_pct: number;
-  week_52_high: number;
-  week_52_low: number;
+  exchange: string;
+  multiple_type: string;
+  latest_price: number | null;
+  latest_revenue: number | null;
+  market_cap: number | null;
+}
+
+export interface TickerInfo {
+  ticker: string;
+  name: string;
+  sector: string;
 }
 
 export interface AIRecommendation {

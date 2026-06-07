@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from routers import financials, earnings, projections, recommendations
 
@@ -6,7 +6,7 @@ app = FastAPI(title="India Equity Analysis API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://*.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,10 +21,22 @@ app.include_router(recommendations.router, prefix="/api/recommendations", tags=[
 def health():
     return {"status": "ok"}
 
+@app.get("/api/tickers")
+def list_tickers():
+    from data.tracker_data import COMPANY_MAP, COMPANY_META
+    return [
+        {
+            "ticker": ticker,
+            "name": COMPANY_META[ticker]["name"],
+            "sector": COMPANY_META[ticker]["sector"],
+        }
+        for ticker in COMPANY_MAP
+    ]
+
 @app.get("/api/meta/{ticker}")
 def get_meta(ticker: str):
-    from data.ather_energy import STOCK_METADATA
-    key = ticker.upper()
-    if key not in STOCK_METADATA:
-        return {"error": f"Ticker {ticker} not found"}
-    return STOCK_METADATA[key]
+    from data.tracker_data import get_meta
+    meta = get_meta(ticker)
+    if not meta:
+        raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found")
+    return meta

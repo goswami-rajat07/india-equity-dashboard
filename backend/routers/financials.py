@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException
-from data.ather_energy import ATHER_FINANCIALS
+from data.tracker_data import get_financials, COMPANY_MAP
 
 router = APIRouter()
 
 @router.get("/{ticker}")
-def get_financials(ticker: str):
-    if ticker.upper() != "ATHENERGY":
-        raise HTTPException(status_code=404, detail=f"Ticker {ticker} not supported yet")
-    return {"ticker": ticker.upper(), "data": ATHER_FINANCIALS}
+def get_financials_route(ticker: str):
+    t = ticker.upper()
+    if t not in COMPANY_MAP:
+        raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found")
+    return {"ticker": t, "data": get_financials(t)}
