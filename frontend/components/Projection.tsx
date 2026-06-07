@@ -27,7 +27,7 @@ function Slider({ label, value, min, max, step, onChange, fmt, hint }: {
 
 export function Projection({ series, holdings }: {
   series: DetailSeries;
-  holdings: { qty: number; avg_cost: number; latest_price: number };
+  holdings: { qty: number; avg_cost: number; latest_price: number | null };
 }) {
   const baseRev = series.rev[series.rev.length - 1] ?? 0;
   const baseNpm = series.npm[series.npm.length - 1] ?? 5;
@@ -56,8 +56,9 @@ export function Projection({ series, holdings }: {
   const projNP = projRev * (a.margin / 100);
   const projEPS = projNP / series.shares;
   const projPrice = projEPS * a.pe;
-  const upside = (projPrice / holdings.latest_price - 1) * 100;
-  const cagr = (Math.pow(Math.abs(projPrice / holdings.latest_price), 1 / a.horizon) - 1) * 100 * (projPrice >= holdings.latest_price ? 1 : -1);
+  const basePrice = holdings.latest_price ?? 0;
+  const upside = basePrice > 0 ? (projPrice / basePrice - 1) * 100 : 0;
+  const cagr = basePrice > 0 ? (Math.pow(Math.abs(projPrice / basePrice), 1 / a.horizon) - 1) * 100 * (projPrice >= basePrice ? 1 : -1) : 0;
 
   const presets = [
     { k: "Bear", g: Math.round(defaults.growth * 0.5), m: +(defaults.margin * 0.8).toFixed(1), pe: Math.round(defaults.pe * 0.7) },
@@ -71,7 +72,7 @@ export function Projection({ series, holdings }: {
   const prices: (number | null)[] = series.price_history.slice();
   for (let i = 1; i <= a.horizon; i++) {
     cats.push("FY" + (26 + i));
-    prices.push(Math.round(holdings.latest_price * Math.pow(Math.abs(projPrice / holdings.latest_price), i / a.horizon)));
+    prices.push(basePrice > 0 ? Math.round(basePrice * Math.pow(Math.abs(projPrice / basePrice), i / a.horizon)) : null);
   }
   const verdict =
     upside >= 35 ? { t: "Material upside", c: PAL.buy } :

@@ -63,12 +63,15 @@ export function Segmented<T extends string>({
   );
 }
 
-export function PortfolioTotals({ stocks }: { stocks: Array<{ invested?: number; value?: number; latest_price: number; prev_close: number; qty: number }> }) {
+export function PortfolioTotals({ stocks }: { stocks: Array<{ invested?: number; value?: number | null; latest_price: number | null; prev_close: number | null; qty: number }> }) {
   const invested = stocks.reduce((a, s) => a + (s.invested ?? 0), 0);
   const value = stocks.reduce((a, s) => a + (s.value ?? 0), 0);
   const pnl = value - invested;
   const pnl_pct = invested > 0 ? ((value / invested) - 1) * 100 : 0;
-  const dayPL = stocks.reduce((a, s) => a + s.qty * (s.latest_price - s.prev_close), 0);
+  const dayPL = stocks.reduce((a, s) => {
+    if (s.latest_price == null || s.prev_close == null) return a;
+    return a + s.qty * (s.latest_price - s.prev_close);
+  }, 0);
   const prevVal = value - dayPL;
   const dayPct = prevVal > 0 ? (dayPL / prevVal) * 100 : 0;
   return { invested, value, pnl, pnl_pct, dayPL, dayPct };

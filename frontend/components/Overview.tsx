@@ -26,7 +26,7 @@ function sortVal(s: PortfolioStock, k: SortKey): number | string {
   const map: Record<SortKey, number | string> = {
     name: s.name,
     signal: s.signal.score,
-    price: s.latest_price,
+    price: s.latest_price ?? -1,
     growth,
     npm,
     pe,

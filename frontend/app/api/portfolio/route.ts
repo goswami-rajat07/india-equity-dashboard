@@ -7,13 +7,12 @@ export async function GET() {
   for (const [ticker, meta] of Object.entries(COMPANY_META)) {
     const rows = TRACKER_DATA[ticker] ?? [];
     const hist = rows.filter((r) => !r.estimated);
-    if (!hist.length) continue;
-
     const holding = PORTFOLIO[ticker] ?? { qty: 1, avg_cost: 1000, prev_close: null };
+
+    const last = hist[hist.length - 1] ?? null;
     const recent = hist.slice(-7);
-    const last = hist[hist.length - 1];
-    const shares = last.shares_cr ?? 1;
-    const latest_price = last.share_price ?? null;
+    const shares = last?.shares_cr ?? null;
+    const latest_price = last?.share_price ?? null;
     const prev_close = holding.prev_close ?? latest_price ?? null;
 
     result.push({

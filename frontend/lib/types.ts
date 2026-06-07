@@ -9,9 +9,9 @@ export interface PortfolioStock {
   name: string;
   sector: string;
   multiple_type: string;
-  shares: number;
-  latest_price: number;
-  prev_close: number;
+  shares: number | null;
+  latest_price: number | null;
+  prev_close: number | null;
   qty: number;
   avg_cost: number;
   fys: string[];
@@ -25,10 +25,10 @@ export interface PortfolioStock {
   signal: Signal;
   // computed client-side
   invested?: number;
-  value?: number;
-  pnl?: number;
-  pnl_pct?: number;
-  day_chg?: number;
+  value?: number | null;
+  pnl?: number | null;
+  pnl_pct?: number | null;
+  day_chg?: number | null;
 }
 
 export interface DetailSeries {
