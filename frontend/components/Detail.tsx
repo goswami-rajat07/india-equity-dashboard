@@ -1,9 +1,105 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import type { DetailSeries, PortfolioStock } from "@/lib/types";
 import { Chart } from "./Chart";
 import { Projection } from "./Projection";
 import { SignalBadge, Delta, Stat, PAL, F } from "./ui";
+
+interface QNote { id: string; quarter: string; text: string; }
+
+function QuarterlyNotes({ ticker }: { ticker: string }) {
+  const [notes, setNotes] = useState<QNote[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [addMode, setAddMode] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [draft, setDraft] = useState({ quarter: "", text: "" });
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(`qnotes_${ticker}`);
+      if (raw) setNotes(JSON.parse(raw));
+    } catch {}
+    setLoaded(true);
+  }, [ticker]);
+
+  const persist = (next: QNote[]) => {
+    setNotes(next);
+    try { localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(next)); } catch {}
+  };
+
+  const startAdd = () => { setDraft({ quarter: "", text: "" }); setAddMode(true); setEditId(null); };
+  const startEdit = (n: QNote) => { setDraft({ quarter: n.quarter, text: n.text }); setEditId(n.id); setAddMode(false); };
+  const cancel = () => { setAddMode(false); setEditId(null); };
+
+  const save = () => {
+    if (!draft.text.trim()) return;
+    if (addMode) {
+      persist([{ id: Date.now().toString(36) + Math.random().toString(36).slice(2), quarter: draft.quarter.trim() || "—", text: draft.text.trim() }, ...notes]);
+      setAddMode(false);
+    } else if (editId) {
+      persist(notes.map(n => n.id === editId ? { ...n, quarter: draft.quarter.trim() || "—", text: draft.text.trim() } : n));
+      setEditId(null);
+    }
+  };
+
+  const del = (id: string) => persist(notes.filter(n => n.id !== id));
+
+  if (!loaded) return null;
+
+  const EditForm = () => (
+    <div className="qnote-edit">
+      <input
+        className="qnote-qin" placeholder="Quarter (e.g. Q4 FY26)"
+        value={draft.quarter} onChange={e => setDraft(d => ({ ...d, quarter: e.target.value }))}
+        autoFocus
+      />
+      <textarea
+        className="qnote-ta" placeholder="Management guidance, key metrics, earnings highlights, thesis updates…"
+        value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))}
+        onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) save(); }}
+      />
+      <div style={{ display: "flex", gap: 8 }}>
+        <button className="qnote-save" onClick={save}>Save</button>
+        <button className="qnote-cancel" onClick={cancel}>Cancel</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="card" style={{ marginTop: 16 }}>
+      <div className="card-h">
+        <span>Quarterly Notes</span>
+        {!addMode && <button className="preset" style={{ fontSize: 12 }} onClick={startAdd}>+ Add note</button>}
+      </div>
+
+      {addMode && <EditForm />}
+
+      {!addMode && notes.length === 0 && (
+        <p className="qnote-empty">No notes yet. Add quarterly guidance, earnings highlights, or thesis updates.</p>
+      )}
+
+      {notes.map(note => (
+        <div key={note.id} className="qnote">
+          {editId === note.id ? (
+            <EditForm />
+          ) : (
+            <>
+              <div className="qnote-head">
+                <strong className="qnote-q">{note.quarter}</strong>
+                <div className="qnote-actions">
+                  <button className="qnote-btn" onClick={() => startEdit(note)}>Edit</button>
+                  <button className="qnote-btn qnote-del" onClick={() => del(note.id)}>Delete</button>
+                </div>
+              </div>
+              <p className="qnote-text">{note.text}</p>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 interface Props {
   series: DetailSeries;
@@ -194,6 +290,8 @@ export function Detail({ series, holding, onBack }: Props) {
         series={series}
         holdings={{ qty: holding.qty, avg_cost: holding.avg_cost, latest_price: holding.latest_price }}
       />
+
+      <QuarterlyNotes ticker={series.ticker} />
     </div>
   );
 }

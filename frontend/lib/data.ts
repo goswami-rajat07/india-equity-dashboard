@@ -174,27 +174,27 @@ export const TRACKER_DATA: Record<string, Row[]> = {
     r("FY22",  2300.0,   0.586,  0.050,   115.0,  null,    null,    null,      null),
     r("FY23",  5200.0,   1.261,  0.065,   338.0,  null,    null,    null,      null),
     r("FY24", 11632.0,   1.237,  0.090,  1047.0,   45.0,  47100.0,   null,    null),
-    r("FY25", 14380.0,   0.236,  0.095,  1366.1,   33.0,  45100.0,  140.4,    3213.0),
-    r("FY26",  26537.0,   0.846,  0.146,  3884.0,   23.0,  87820.0,  300.8,    3053.0),
-    r("FY27E",28000.0,   0.400,  0.110,  3080.0,   24.0,  73920.0,  140.4,    5265.0),
-    r("FY28E",38000.0,   0.357,  0.115,  4370.0,   20.0,  87400.0,  140.4,    6225.0),
-    r("FY29E",48000.0,   0.263,  0.118,  5664.0,   18.0, 101952.0,  140.4,    7261.0),
-    r("FY30E",57600.0,   0.200,  0.120,  6912.0,   16.0, 110592.0,  140.4,    7876.0),
-    r("FY31E",67000.0,   0.163,  0.122,  8174.0,   14.0, 114436.0,  140.4,    8150.0),
+    r("FY25", 14380.0,   0.236,  0.095,  1366.1,   33.0,  45100.0,   14.04,    3213.0),
+    r("FY26",  26537.0,   0.846,  0.146,  3884.0,   23.0,  87820.0,   30.08,    3053.0),
+    r("FY27E",28000.0,   0.400,  0.110,  3080.0,   24.0,  73920.0,   14.04,    5265.0),
+    r("FY28E",38000.0,   0.357,  0.115,  4370.0,   20.0,  87400.0,   14.04,    6225.0),
+    r("FY29E",48000.0,   0.263,  0.118,  5664.0,   18.0, 101952.0,   14.04,    7261.0),
+    r("FY30E",57600.0,   0.200,  0.120,  6912.0,   16.0, 110592.0,   14.04,    7876.0),
+    r("FY31E",67000.0,   0.163,  0.122,  8174.0,   14.0, 114436.0,   14.04,    8150.0),
   ],
   KAYNES: [
     r("FY20",   450.0,   null,   0.040,    18.0,  null,    null,    null,      null),
     r("FY21",   530.0,   0.178,  0.042,    22.3,  null,    null,    null,      null),
     r("FY22",   900.0,   0.698,  0.060,    54.0,  null,    null,    null,      null),
     r("FY23",  1454.0,   0.616,  0.075,   109.1,  null,    null,    null,      null),
-    r("FY24",  1809.0,   0.244,  0.085,   153.8,  120.0,  18450.0,   52.4,    3521.0),
-    r("FY25",  2300.0,   0.271,  0.095,   218.5,  100.0,  21850.0,   54.2,    4031.0),
-    r("FY26",  3626.0,   0.577,  0.100,   364.0,   57.0,  20927.0,   67.0,    3122.0),
-    r("FY27E", 4508.0,   0.400,  0.110,   495.9,   65.0,  32230.0,   54.2,    5947.0),
-    r("FY28E", 5861.0,   0.300,  0.115,   673.9,   55.0,  37065.0,   54.2,    6840.0),
-    r("FY29E", 7329.0,   0.250,  0.120,   879.5,   45.0,  39580.0,   54.2,    7302.0),
-    r("FY30E", 8795.0,   0.200,  0.125,  1099.4,   40.0,  43980.0,   54.2,    8115.0),
-    r("FY31E", 9674.5,   0.100,  0.130,  1257.7,   35.0,  44020.0,   54.2,    8122.0),
+    r("FY24",  1809.0,   0.244,  0.085,   153.8,  120.0,  18450.0,    5.24,    3521.0),
+    r("FY25",  2300.0,   0.271,  0.095,   218.5,  100.0,  21850.0,    5.42,    4031.0),
+    r("FY26",  3626.0,   0.577,  0.100,   364.0,   57.0,  20927.0,    6.7,     3122.0),
+    r("FY27E", 4508.0,   0.400,  0.110,   495.9,   65.0,  32230.0,    5.42,    5947.0),
+    r("FY28E", 5861.0,   0.300,  0.115,   673.9,   55.0,  37065.0,    5.42,    6840.0),
+    r("FY29E", 7329.0,   0.250,  0.120,   879.5,   45.0,  39580.0,    5.42,    7302.0),
+    r("FY30E", 8795.0,   0.200,  0.125,  1099.4,   40.0,  43980.0,    5.42,    8115.0),
+    r("FY31E", 9674.5,   0.100,  0.130,  1257.7,   35.0,  44020.0,    5.42,    8122.0),
   ],
   ATHERENERG: [
     r("FY20",    49.0,   null,   -4.50,   -220.5,  null,    null,      3.0,     null),
@@ -300,7 +300,7 @@ export const TRACKER_DATA: Record<string, Row[]> = {
   ],
 };
 
-export function computeSignal(hist: Row[]): { label: "Buy" | "Hold" | "Sell"; score: number; reasons: string[] } {
+export function computeSignal(hist: Row[], estimated: Row[] = []): { label: "Buy" | "Hold" | "Sell"; score: number; reasons: string[] } {
   if (!hist.length) return { label: "Hold", score: 50, reasons: [] };
 
   let rev_growth: number | null = null;
@@ -338,6 +338,26 @@ export function computeSignal(hist: Row[]): { label: "Buy" | "Hold" | "Sell"; sc
   }
 
   score = Math.max(0, Math.min(100, Math.round(score)));
-  const label = score >= 64 ? "Buy" : score <= 42 ? "Sell" : "Hold";
+  let label: "Buy" | "Hold" | "Sell" = score >= 64 ? "Buy" : score <= 42 ? "Sell" : "Hold";
+
+  // Only allow Buy if the base-case projection implies ≥ 12% annual return
+  if (label === "Buy" && estimated.length > 0) {
+    const currentPrice = [...hist].reverse().find(r => r.share_price != null)?.share_price ?? null;
+    const projRow = [...estimated].reverse().find(r => r.share_price != null) ?? null;
+    if (currentPrice && projRow?.share_price && currentPrice > 0) {
+      const currentYear = parseInt(hist[hist.length - 1].year.replace(/\D/g, ""));
+      const projYear = parseInt(projRow.year.replace(/\D/g, ""));
+      const years = projYear - currentYear;
+      if (years > 0) {
+        const cagr = Math.pow(projRow.share_price / currentPrice, 1 / years) - 1;
+        if (cagr < 0.12) {
+          label = "Hold";
+          score = Math.min(score, 63);
+          reasons.push(`Projected CAGR ${(cagr * 100).toFixed(0)}% below 12% threshold`);
+        }
+      }
+    }
+  }
+
   return { label, score, reasons: reasons.slice(0, 3) };
 }
