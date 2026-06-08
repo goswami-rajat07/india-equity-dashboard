@@ -40,7 +40,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
 
   const persist = (next: QNote[]) => {
     setNotes(next);
-    try { localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(next)); } catch {}
+    try { localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(next)); } catch {};
   };
 
   const startAdd = () => { setDraft({ quarter: "", text: "" }); setAddMode(true); setEditId(null); };
@@ -269,7 +269,7 @@ export function Detail({ series, holding, onBack }: Props) {
             </span>
           </div>
           <Chart
-            categories={series.fys} height={200}
+            categories={series.fys} height={200} viewBoxWidth={1440}
             bars={{ values: series.rev_growth, color: PAL.rev, label: "Revenue growth", fmt: (v) => F.pct(v), labelFmt: shortPct }}
             lines={[{ values: npGrowthCapped, color: "#E8752A", axis: "left", label: "Profit growth", fmt: (v) => F.pct(v), labelFmt: shortPct }]}
             leftFmt={(v) => v + "%"}

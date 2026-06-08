@@ -9,6 +9,7 @@ interface LineSpec { values: (number | null)[]; color: string; axis: "left" | "r
 interface ChartProps {
   categories: string[];
   height?: number;
+  viewBoxWidth?: number;
   bars?: BarSpec;
   lines?: LineSpec[];
   leftFmt?: (v: number) => string;
@@ -25,9 +26,9 @@ function niceMax(v: number): number {
   return step * pow;
 }
 
-export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rightFmt, yZero = false, showLabels = false }: ChartProps) {
+export function Chart({ categories, bars, lines = [], height = 230, viewBoxWidth = 720, leftFmt, rightFmt, yZero = false, showLabels = false }: ChartProps) {
   const [hi, setHi] = useState<number | null>(null);
-  const W = 720, H = height;
+  const W = viewBoxWidth, H = height;
   const m = { t: showLabels ? 26 : 16, r: lines.some(l => l.axis === "right") ? 52 : 18, b: 30, l: 56 };
   const iw = W - m.l - m.r, ih = H - m.t - m.b;
   const n = categories.length;
@@ -135,7 +136,7 @@ export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rig
             ? Math.min(H - m.b - 4, Math.max(y0, y1) + 11)
             : Math.max(m.t + 9, Math.min(y0, y1) - 3);
           return (
-            <text key={i} x={xBar(i)} y={labelY} textAnchor="middle" className="cax" style={{ fontSize: 9 }}>
+            <text key={i} x={xBar(i)} y={labelY} textAnchor="middle" className="cax">
               {txt}
             </text>
           );
@@ -161,7 +162,7 @@ export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rig
                   ? Math.max(m.t + 9, cy - 8)
                   : Math.min(H - m.b - 4, cy + 15);
                 return (
-                  <text key={`lbl-${i}`} x={xAt(i)} y={labelY} textAnchor="middle" className="cax" style={{ fontSize: 9, fill: l.color }}>
+                  <text key={`lbl-${i}`} x={xAt(i)} y={labelY} textAnchor="middle" className="cax" style={{ fill: l.color }}>
                     {txt}
                   </text>
                 );
