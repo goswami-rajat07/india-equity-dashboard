@@ -1,4 +1,4 @@
-import type { PortfolioStock, DetailSeries, ProjectionRow } from "@/lib/types";
+import type { PortfolioStock, DetailSeries, ProjectionRow, AIRecommendation } from "@/lib/types";
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(path, { cache: "no-store" });
@@ -31,4 +31,7 @@ export const api = {
     get<{ ticker: string; base: ProjectionRow[]; bull: ProjectionRow[]; bear: ProjectionRow[]; assumptions: string[] }>(
       `/api/projections/${ticker}`
     ),
+
+  recommendation: (ticker: string) =>
+    get<AIRecommendation>(`/api/recommendations/${ticker}`),
 };

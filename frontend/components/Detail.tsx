@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { DetailSeries, PortfolioStock } from "@/lib/types";
 import { Chart } from "./Chart";
 import { Projection } from "./Projection";
+import { AIRecommendation } from "./AIRecommendation";
 import { SignalBadge, Delta, Stat, PAL, F } from "./ui";
 
 interface QNote { id: string; quarter: string; text: string; }
@@ -290,6 +291,8 @@ export function Detail({ series, holding, onBack }: Props) {
         series={series}
         holdings={{ qty: holding.qty, avg_cost: holding.avg_cost, latest_price: holding.latest_price }}
       />
+
+      <AIRecommendation ticker={series.ticker} latestPrice={holding.latest_price ?? null} />
 
       <QuarterlyNotes ticker={series.ticker} />
     </div>

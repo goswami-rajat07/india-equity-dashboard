@@ -61,3 +61,15 @@ export interface ProjectionRow {
   price_bear: number | null;
   valuation_multiple: number | null;
 }
+
+export interface AIRecommendation {
+  signal: "BUY" | "ACCUMULATE" | "HOLD" | "WATCH" | "AVOID";
+  signal_rationale: string;
+  target_price_1yr: number | null;
+  upside_pct: number | null;
+  key_positives: string[];
+  key_risks: string[];
+  watchlist_triggers: string[];
+  analyst_note: string;
+  _fallback?: boolean;
+}
