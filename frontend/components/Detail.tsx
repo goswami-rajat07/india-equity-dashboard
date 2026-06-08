@@ -15,13 +15,16 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
   const [loaded, setLoaded] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [draft, setDraft] = useState({ quarter: "", text: "" });
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(`qnotes_${ticker}`);
       if (raw) {
-        setNotes(JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        setNotes(parsed);
+        if (parsed.length) setActiveId(parsed[0].id);
       } else {
         const seeds = SEED_NOTES[ticker] ?? [];
         if (seeds.length) {
@@ -31,6 +34,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
             text: s.text,
           }));
           setNotes(seeded);
+          setActiveId(seeded[0].id);
           localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(seeded));
         }
       }
@@ -40,7 +44,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
 
   const persist = (next: QNote[]) => {
     setNotes(next);
-    try { localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(next)); } catch {};
+    try { localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(next)); } catch {}
   };
 
   const startAdd = () => { setDraft({ quarter: "", text: "" }); setAddMode(true); setEditId(null); };
@@ -50,26 +54,43 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
   const save = () => {
     if (!draft.text.trim()) return;
     if (addMode) {
-      persist([{ id: Date.now().toString(36) + Math.random().toString(36).slice(2), quarter: draft.quarter.trim() || "—", text: draft.text.trim() }, ...notes]);
+      const newNote: QNote = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+        quarter: draft.quarter.trim() || "—",
+        text: draft.text.trim(),
+      };
+      const next = [newNote, ...notes];
+      persist(next);
+      setActiveId(newNote.id);
       setAddMode(false);
     } else if (editId) {
-      persist(notes.map(n => n.id === editId ? { ...n, quarter: draft.quarter.trim() || "—", text: draft.text.trim() } : n));
+      persist(notes.map(n =>
+        n.id === editId ? { ...n, quarter: draft.quarter.trim() || "—", text: draft.text.trim() } : n
+      ));
       setEditId(null);
     }
   };
 
-  const del = (id: string) => persist(notes.filter(n => n.id !== id));
+  const del = (id: string) => {
+    const next = notes.filter(n => n.id !== id);
+    persist(next);
+    setActiveId(next.length ? next[0].id : null);
+    setEditId(null);
+  };
 
   if (!loaded) return null;
+
+  const active = notes.find(n => n.id === activeId) ?? null;
 
   const editForm = (
     <div className="qnote-edit">
       <input
-        className="qnote-qin" placeholder="Quarter (e.g. Q4 FY26)"
+        className="qnote-qin" placeholder="Quarter (e.g. Q3 FY26)"
         value={draft.quarter} onChange={e => setDraft(d => ({ ...d, quarter: e.target.value }))}
       />
       <textarea
-        className="qnote-ta" placeholder="Management guidance, key metrics, earnings highlights, thesis updates…"
+        className="qnote-ta"
+        placeholder="Management guidance, key metrics, earnings highlights, thesis updates…"
         value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))}
         onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) save(); }}
         autoFocus
@@ -85,33 +106,51 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
     <div className="card" style={{ marginTop: 16 }}>
       <div className="card-h">
         <span>Quarterly Notes</span>
-        {!addMode && <button className="preset" style={{ fontSize: 12 }} onClick={startAdd}>+ Add note</button>}
+        {!addMode && !editId && (
+          <button className="preset" style={{ fontSize: 12 }} onClick={startAdd}>+ Add note</button>
+        )}
       </div>
 
+      {/* Quarter tab strip */}
+      {notes.length > 0 && (
+        <div className="qnote-tabs">
+          {notes.map(n => (
+            <button
+              key={n.id}
+              className={`qnote-tab${n.id === activeId && !addMode ? " active" : ""}`}
+              onClick={() => { setActiveId(n.id); setAddMode(false); setEditId(null); }}
+            >
+              {n.quarter}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Add form */}
       {addMode && editForm}
 
+      {/* Empty state */}
       {!addMode && notes.length === 0 && (
         <p className="qnote-empty">No notes yet. Add quarterly guidance, earnings highlights, or thesis updates.</p>
       )}
 
-      {notes.map(note => (
-        <div key={note.id} className="qnote">
-          {editId === note.id ? (
-            editForm
-          ) : (
+      {/* Active note */}
+      {!addMode && active && (
+        <div className="qnote-body">
+          {editId === active.id ? editForm : (
             <>
               <div className="qnote-head">
-                <strong className="qnote-q">{note.quarter}</strong>
+                <strong className="qnote-q">{active.quarter}</strong>
                 <div className="qnote-actions">
-                  <button className="qnote-btn" onClick={() => startEdit(note)}>Edit</button>
-                  <button className="qnote-btn qnote-del" onClick={() => del(note.id)}>Delete</button>
+                  <button className="qnote-btn" onClick={() => startEdit(active)}>Edit</button>
+                  <button className="qnote-btn qnote-del" onClick={() => del(active.id)}>Delete</button>
                 </div>
               </div>
-              <p className="qnote-text" style={{ whiteSpace: "pre-wrap" }}>{note.text}</p>
+              <p className="qnote-text">{active.text}</p>
             </>
           )}
         </div>
-      ))}
+      )}
     </div>
   );
 }
