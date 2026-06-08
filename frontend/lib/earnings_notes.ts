@@ -27,10 +27,16 @@ export const SEED_NOTES: Record<string, { quarter: string; text: string }[]> = {
     text: "Revenue: ₹4,450 Cr | Net Profit: ₹666 Cr | OPM: 20%\n\n• Encora acquisition (closed Jan 2026) is the key strategic development — adds US insurance domain capabilities and revenue scale\n• Launched Nexa Agentic AI Platform for insurance operations (June 2026)\n• TTM revenue growth 36%; 5-year profit CAGR 28%; operating margin structurally improved to 20%\n• ROCE 23.5%, ROE 20.6%; near debt-free\n• Risk: Tax rate volatile (13–34% range across recent quarters); Encora integration execution risk"
   }],
 
-  DIXON: [{
-    quarter: "Q4 FY26",
-    text: "Revenue: ₹10,511 Cr | Net Profit: ₹298 Cr\nFY26 full-year: Sales ₹48,873 Cr | Net Profit ₹1,644 Cr\n\n• Mobile & EMS division now 90% of FY26 revenue — Samsung partnership driving volumes\n• Expanding into wireless audio via JV with Imagine Marketing (boAt brand)\n• TTM profit CAGR 86%; ROCE 42%, ROE 37.4%; FCF positive at ₹724 Cr in FY26\n• Risk: Operating margin remains thin at ~4%; ₹734 Cr other income materially boosts reported profits\n• Risk: Promoter holding down 5.38% over 3 years to 28.69%; stock at 14.9x book"
-  }],
+  DIXON: [
+    {
+      quarter: "Q3 FY26",
+      text: "Revenue: ₹10,672 Cr (+2.1% YoY) | Net Profit: ₹321 Cr (+48.6% YoY) | OPM: 4% | EPS: ₹47.34\n\n• Seasonally soft quarter post festive Q2 (₹14,855 Cr) — QoQ revenue down ~28%, expected\n• PAT growth (+48.6%) significantly outpaced revenue — margin improvement and product mix\n• EPS ₹47.34 vs ₹28.50 in Q3 FY25 (+66% YoY) — strong per-share earnings trajectory\n• 9M FY26 cumulative PAT: ₹1,347 Cr (Q1 ₹280 Cr + Q2 ₹746 Cr + Q3 ₹321 Cr)\n• Mobile & EMS (~90% revenue mix): Samsung partnership continues as primary volume driver\n• JV with Imagine Marketing (boAt brand) for wireless audio segment underway"
+    },
+    {
+      quarter: "Q4 FY26",
+      text: "Revenue: ₹10,511 Cr | Net Profit: ₹298 Cr\nFY26 full-year: Sales ₹48,873 Cr | Net Profit ₹1,644 Cr\n\n• Mobile & EMS division now 90% of FY26 revenue — Samsung partnership driving volumes\n• Expanding into wireless audio via JV with Imagine Marketing (boAt brand)\n• TTM profit CAGR 86%; ROCE 42%, ROE 37.4%; FCF positive at ₹724 Cr in FY26\n• Risk: Operating margin remains thin at ~4%; ₹734 Cr other income materially boosts reported profits\n• Risk: Promoter holding down 5.38% over 3 years to 28.69%; stock at 14.9x book"
+    }
+  ],
 
   ETERNAL: [{
     quarter: "Q4 FY26",
