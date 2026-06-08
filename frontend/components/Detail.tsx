@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { DetailSeries, PortfolioStock } from "@/lib/types";
+import { SEED_NOTES } from "@/lib/earnings_notes";
 import { Chart } from "./Chart";
 import { Projection } from "./Projection";
 import { AIRecommendation } from "./AIRecommendation";
@@ -19,7 +20,20 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(`qnotes_${ticker}`);
-      if (raw) setNotes(JSON.parse(raw));
+      if (raw) {
+        setNotes(JSON.parse(raw));
+      } else {
+        const seeds = SEED_NOTES[ticker] ?? [];
+        if (seeds.length) {
+          const seeded: QNote[] = seeds.map((s, i) => ({
+            id: `seed_${i}_${ticker}`,
+            quarter: s.quarter,
+            text: s.text,
+          }));
+          setNotes(seeded);
+          localStorage.setItem(`qnotes_${ticker}`, JSON.stringify(seeded));
+        }
+      }
     } catch {}
     setLoaded(true);
   }, [ticker]);
@@ -93,7 +107,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
                   <button className="qnote-btn qnote-del" onClick={() => del(note.id)}>Delete</button>
                 </div>
               </div>
-              <p className="qnote-text">{note.text}</p>
+              <p className="qnote-text" style={{ whiteSpace: "pre-wrap" }}>{note.text}</p>
             </>
           )}
         </div>
