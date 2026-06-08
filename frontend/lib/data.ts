@@ -39,6 +39,7 @@ export const COMPANY_META: Record<string, { name: string; sector: string; multip
   KAYNES:     { name: "Kaynes",                sector: "Electronics Mfg",            multiple_type: "P/E" },
   "M&M":      { name: "M&M",                  sector: "Automobiles",                multiple_type: "P/E" },
   MAZDOCK:    { name: "Mazagon Dock",          sector: "Defence / Shipbuilding",     multiple_type: "P/E" },
+  MEDANTA:    { name: "Medanta (Global Health)", sector: "Healthcare",              multiple_type: "P/E" },
   MON100:     { name: "Motilal Nasdaq 100",    sector: "ETF – Global Tech",          multiple_type: "N/A" },
   NIFTYBEES:  { name: "NiftyBees ETF",         sector: "ETF – Nifty 50",             multiple_type: "N/A" },
   POLICYBZR:  { name: "PolicyBazaar",          sector: "Insurance Tech",             multiple_type: "P/E" },
@@ -47,7 +48,6 @@ export const COMPANY_META: Record<string, { name: string; sector: string; multip
   VBL:        { name: "Varun Beverages",       sector: "FMCG / Beverages",           multiple_type: "P/E" },
   WAAREEENER: { name: "Waaree Energy",         sector: "Solar Energy",               multiple_type: "P/E" },
   WAAREERTL:  { name: "Waaree Renewable",      sector: "Renewable EPC",              multiple_type: "P/E" },
-  MEDANTA:    { name: "Medanta (Global Health)", sector: "Healthcare",               multiple_type: "P/E" },
 };
 
 export const PORTFOLIO: Record<string, { qty: number; avg_cost: number; prev_close: number | null }> = {
@@ -63,7 +63,7 @@ export const PORTFOLIO: Record<string, { qty: number; avg_cost: number; prev_clo
   IREDA:      { qty: 1, avg_cost: 164.25, prev_close: 128   },
   JWL:        { qty: 1, avg_cost: 401.11, prev_close: null  },
   KAYNES:     { qty: 1, avg_cost: 4015,   prev_close: 3972  },
-  MEDANTA:    { qty: 1, avg_cost: 1200,   prev_close: null  },
+  MEDANTA:    { qty: 1, avg_cost: 1200,   prev_close: 1225  },
   "M&M":      { qty: 1, avg_cost: 3358,   prev_close: 4132  },
   MAZDOCK:    { qty: 1, avg_cost: 2454,   prev_close: 2086  },
   MON100:     { qty: 1, avg_cost: 223,    prev_close: null  },
@@ -300,6 +300,20 @@ export const TRACKER_DATA: Record<string, Row[]> = {
     r("FY25", 1597.0,  0.823,   0.143,  229.0,  null,    null,  10.41,   1048.0),
     r("FY26", 3331.0,  1.086,   0.145,  483.0,  21.0, 10124.0,  10.43,  970.0),
   ],
+  MEDANTA: [
+    r("FY20",  1500.0,  null,   0.024,   36.0,  null,     null,   26.8,    null),
+    r("FY21",  1447.0, -0.035,  0.020,   29.0,  null,     null,   26.8,    null),
+    r("FY22",  2167.0,  0.498,  0.090,  196.0,  null,     null,   26.8,    null),
+    r("FY23",  2710.0,  0.251,  0.120,  326.0,  33.0,  10720.0,  26.8,   400.0),
+    r("FY24",  3275.0,  0.208,  0.146,  478.0,  53.0,  25192.0,  26.8,   940.0),
+    r("FY25",  3692.0,  0.127,  0.130,  481.0,  59.0,  28140.0,  26.8,  1050.0),
+    r("FY26",  4410.0,  0.194,  0.126,  554.0,  59.5,  33151.0,  26.8,  1233.0),
+    r("FY27E", 5100.0,  0.157,  0.128,  653.0,  50.0,  32650.0,  26.8,  1218.0),
+    r("FY28E", 5900.0,  0.157,  0.132,  779.0,  45.0,  35055.0,  26.8,  1308.0),
+    r("FY29E", 6800.0,  0.153,  0.136,  925.0,  40.0,  37000.0,  26.8,  1381.0),
+    r("FY30E", 7800.0,  0.147,  0.140, 1092.0,  35.0,  38220.0,  26.8,  1426.0),
+    r("FY31E", 9000.0,  0.141,  0.143, 1260.0,  30.0,  37800.0,  26.8,  1410.0),
+  ],
 };
 
 export function computeSignal(hist: Row[], estimated: Row[] = []): { label: "Buy" | "Hold" | "Sell"; score: number; reasons: string[] } {
@@ -342,7 +356,7 @@ export function computeSignal(hist: Row[], estimated: Row[] = []): { label: "Buy
   score = Math.max(0, Math.min(100, Math.round(score)));
   let label: "Buy" | "Hold" | "Sell" = score >= 64 ? "Buy" : score <= 42 ? "Sell" : "Hold";
 
-  // Only allow Buy if the base-case projection implies ≥ 12% annual return
+  // Only allow Buy if the base-case projection implies >= 12% annual return
   if (label === "Buy" && estimated.length > 0) {
     const currentPrice = [...hist].reverse().find(r => r.share_price != null)?.share_price ?? null;
     const projRow = [...estimated].reverse().find(r => r.share_price != null) ?? null;
