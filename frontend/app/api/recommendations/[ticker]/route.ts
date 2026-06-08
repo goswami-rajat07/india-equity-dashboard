@@ -68,17 +68,10 @@ Provide a structured investment recommendation for a retail investor with a 2-3 
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({
-      signal: "HOLD",
-      signal_rationale: "ANTHROPIC_API_KEY not configured — set it in Vercel environment variables to enable AI analysis",
-      target_price_1yr: null,
-      upside_pct: null,
-      key_positives: ["AI analysis requires API key", "Set ANTHROPIC_API_KEY in Vercel env vars", "Analysis will be available once configured"],
-      key_risks: ["API key not configured"],
-      watchlist_triggers: ["Configure ANTHROPIC_API_KEY to enable"],
-      analyst_note: "AI-powered analysis requires ANTHROPIC_API_KEY to be configured in your Vercel project environment variables. Once set, click Generate Analysis to get a full recommendation.",
-      _fallback: true,
-    });
+    return NextResponse.json(
+      { error: "ANTHROPIC_API_KEY is not configured on this deployment" },
+      { status: 503 }
+    );
   }
 
   try {
