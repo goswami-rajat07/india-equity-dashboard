@@ -98,7 +98,7 @@ export const SEED_NOTES: Record<string, { quarter: string; text: string }[]> = {
   }],
 
   TECHD: [{
-    quarter: "H2 FY26",
-    text: "Reports semi-annually. Specific H2 FY26 financials not publicly visible on screener (login required).\n\n• 545+ regulated entities engaged, including 405 SEBI customers\n• 140+ new client onboardings in April–May 2026 alone — strong pipeline conversion\n• Received 3 domestic purchase orders worth ₹1.40 Cr (12-month contracts, Apr–May 2026)\n• CERT-In empanelled, ISO 27001 certified; serves BFSI, NBFC, manufacturing, healthcare, aviation, government\n• Shareholding (Mar 2026): Promoters 63.24%, DII 2.90%, FII 0.01%, Public 33.85%"
+    quarter: "FY26 Full Year",
+    text: "Revenue: ₹51.8 Cr (+73.9% YoY) | Net Profit: ₹14.04 Cr (+67.6% YoY)\nH2 FY26: Revenue ₹33.63 Cr | PAT ₹7.67 Cr | EPS: ₹21.54 (Basic)\n\nFY27 Management Guidance:\n• Organic revenue target: ₹75–80 Cr\n• Potential inorganic addition: ~₹30 Cr from pending acquisition of Australia-based MSSP (projected $4.5M revenue) — in final stages\n• TECHD ONE platform Phase 1 rollout in Q1 FY27 — 4 AI-native modules: DarkVector AI (Digital Risk Protection), HumanTrust AI (Human Risk Management), OTshield AI (Vulnerability Intelligence), Provenance AI (Supply Chain Security)\n• Revenue contribution from TECHD ONE expected to begin in Q1 FY27; material visibility over next 2–4 quarters\n\nOperational Highlights:\n• Order book: ₹43 Cr (May 2026, multi-year contracts + renewals)\n• 730+ customer logos; 150 new logos onboarded in H2 FY26; 98% renewal rate / 2% churn\n• AI integration reduced employee costs from ₹12 Cr → ₹9.36 Cr; EBITDA margin grew 83.66% YoY\n• IPO raised ₹38.99 Cr; ₹35.38 Cr unutilized — strong cash position for inorganic growth\n• CERT-In empanelled, ISO 27001 certified; 545+ regulated entity clients including 405 SEBI customers"
   }],
 };
