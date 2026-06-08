@@ -47,17 +47,17 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
 
   if (!loaded) return null;
 
-  const EditForm = () => (
+  const editForm = (
     <div className="qnote-edit">
       <input
         className="qnote-qin" placeholder="Quarter (e.g. Q4 FY26)"
         value={draft.quarter} onChange={e => setDraft(d => ({ ...d, quarter: e.target.value }))}
-        autoFocus
       />
       <textarea
         className="qnote-ta" placeholder="Management guidance, key metrics, earnings highlights, thesis updates…"
         value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))}
         onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) save(); }}
+        autoFocus
       />
       <div style={{ display: "flex", gap: 8 }}>
         <button className="qnote-save" onClick={save}>Save</button>
@@ -73,7 +73,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
         {!addMode && <button className="preset" style={{ fontSize: 12 }} onClick={startAdd}>+ Add note</button>}
       </div>
 
-      {addMode && <EditForm />}
+      {addMode && editForm}
 
       {!addMode && notes.length === 0 && (
         <p className="qnote-empty">No notes yet. Add quarterly guidance, earnings highlights, or thesis updates.</p>
@@ -82,7 +82,7 @@ function QuarterlyNotes({ ticker }: { ticker: string }) {
       {notes.map(note => (
         <div key={note.id} className="qnote">
           {editId === note.id ? (
-            <EditForm />
+            editForm
           ) : (
             <>
               <div className="qnote-head">
