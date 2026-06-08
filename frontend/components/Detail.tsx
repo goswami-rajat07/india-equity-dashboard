@@ -11,6 +11,24 @@ interface Props {
   onBack: () => void;
 }
 
+function shortCr(v: number): string {
+  const a = Math.abs(v), s = v < 0 ? "-" : "";
+  if (a >= 100000) return s + (a / 1000).toFixed(0) + "k";
+  if (a >= 10000)  return s + (a / 1000).toFixed(1) + "k";
+  if (a >= 1000)   return s + (a / 1000).toFixed(1) + "k";
+  return s + Math.round(a).toString();
+}
+
+function shortPct(v: number): string {
+  return (v >= 0 ? "+" : "") + v.toFixed(0) + "%";
+}
+
+function shortRupee(v: number): string {
+  const a = Math.abs(v), s = v < 0 ? "-₹" : "₹";
+  if (a >= 1000) return s + (a / 1000).toFixed(1) + "k";
+  return s + Math.round(a).toString();
+}
+
 export function Detail({ series, holding, onBack }: Props) {
   const sig = holding.signal;
   const latestNpm  = series.npm[series.npm.length - 1];
@@ -20,14 +38,19 @@ export function Detail({ series, holding, onBack }: Props) {
   const latestRev  = series.rev[series.rev.length - 1];
   const npmThreeAgo = series.npm.length >= 3 ? series.npm[series.npm.length - 4] : null;
 
+  const npGrowthCapped = series.np_growth.map(v =>
+    v == null ? null : Math.max(-300, Math.min(500, v))
+  );
+
   const rows = [
-    { l: "Revenue",       v: series.rev,        f: (x: number) => F.crore(x) },
-    { l: "Net profit",    v: series.np,         f: (x: number) => F.crore(x), neg: true },
-    { l: "Net margin",    v: series.npm,        f: (x: number | null) => x == null ? "—" : F.pctPlain(x), neg: true },
-    { l: "Rev growth YoY",v: series.rev_growth, f: (x: number | null) => x == null ? "—" : F.pct(x), neg: true },
-    { l: "EPS",           v: series.eps,        f: (x: number | null) => x == null ? "—" : F.rupees(x, 1), neg: true },
-    { l: "P/E or P/S",    v: series.pe,         f: (x: number | null) => x == null ? "—" : F.mult(x) },
-    { l: "Price",         v: series.price_history, f: (x: number | null) => x == null ? "—" : F.rupees(x) },
+    { l: "Revenue",          v: series.rev,        f: (x: number) => F.crore(x) },
+    { l: "Net profit",       v: series.np,         f: (x: number) => F.crore(x), neg: true },
+    { l: "Net margin",       v: series.npm,        f: (x: number | null) => x == null ? "—" : F.pctPlain(x), neg: true },
+    { l: "Rev growth YoY",  v: series.rev_growth, f: (x: number | null) => x == null ? "—" : F.pct(x), neg: true },
+    { l: "Profit growth YoY", v: series.np_growth, f: (x: number | null) => x == null ? "—" : F.pct(x), neg: true },
+    { l: "EPS",              v: series.eps,        f: (x: number | null) => x == null ? "—" : F.rupees(x, 1), neg: true },
+    { l: "P/E or P/S",      v: series.pe,         f: (x: number | null) => x == null ? "—" : F.mult(x) },
+    { l: "Price",            v: series.price_history, f: (x: number | null) => x == null ? "—" : F.rupees(x) },
   ];
 
   return (
@@ -88,10 +111,11 @@ export function Detail({ series, holding, onBack }: Props) {
           </div>
           <Chart
             categories={series.fys} height={230}
-            bars={{ values: series.rev, color: PAL.rev, label: "Revenue", fmt: (v) => F.crore(v) }}
-            lines={[{ values: series.npm, color: PAL.margin, axis: "right", label: "Net margin", fmt: (v) => F.pctPlain(v) }]}
+            bars={{ values: series.rev, color: PAL.rev, label: "Revenue", fmt: (v) => F.crore(v), labelFmt: shortCr }}
+            lines={[{ values: series.npm, color: PAL.margin, axis: "right", label: "Net margin", fmt: (v) => F.pctPlain(v), labelFmt: (v) => v.toFixed(1) + "%" }]}
             leftFmt={(v) => v >= 1000 ? (v / 1000).toFixed(0) + "k" : String(v)}
             rightFmt={(v) => v + "%"}
+            showLabels
           />
         </div>
 
@@ -99,8 +123,9 @@ export function Detail({ series, holding, onBack }: Props) {
           <div className="card-h"><span>Net profit</span></div>
           <Chart
             categories={series.fys} height={230} yZero
-            bars={{ values: series.np, color: PAL.rev, label: "Net profit", fmt: (v) => F.crore(v) }}
+            bars={{ values: series.np, color: PAL.rev, label: "Net profit", fmt: (v) => F.crore(v), labelFmt: shortCr }}
             leftFmt={(v) => v >= 1000 || v <= -1000 ? (v / 1000).toFixed(0) + "k" : String(v)}
+            showLabels
           />
         </div>
 
@@ -108,8 +133,9 @@ export function Detail({ series, holding, onBack }: Props) {
           <div className="card-h"><span>{series.multiple_type} ratio</span></div>
           <Chart
             categories={series.fys} height={230}
-            lines={[{ values: series.pe, color: PAL.pe, axis: "left", label: series.multiple_type, fmt: (v) => F.mult(v) }]}
+            lines={[{ values: series.pe, color: PAL.pe, axis: "left", label: series.multiple_type, fmt: (v) => F.mult(v), labelFmt: (v) => v.toFixed(0) + "×" }]}
             leftFmt={(v) => v + "×"}
+            showLabels
           />
         </div>
 
@@ -117,8 +143,26 @@ export function Detail({ series, holding, onBack }: Props) {
           <div className="card-h"><span>Share price</span></div>
           <Chart
             categories={series.fys} height={230}
-            lines={[{ values: series.price_history, color: PAL.price, axis: "left", label: "Price", fmt: (v) => F.rupees(v) }]}
+            lines={[{ values: series.price_history, color: PAL.price, axis: "left", label: "Price", fmt: (v) => F.rupees(v), labelFmt: shortRupee }]}
             leftFmt={(v) => "₹" + (v >= 1000 ? (v / 1000).toFixed(1) + "k" : v)}
+            showLabels
+          />
+        </div>
+
+        <div className="card" style={{ gridColumn: "1 / -1" }}>
+          <div className="card-h">
+            <span>Revenue & profit growth (YoY %)</span>
+            <span className="leg">
+              <i style={{ background: PAL.rev }} />Revenue growth
+              <i style={{ background: "#E8752A" }} />Profit growth
+            </span>
+          </div>
+          <Chart
+            categories={series.fys} height={200}
+            bars={{ values: series.rev_growth, color: PAL.rev, label: "Revenue growth", fmt: (v) => F.pct(v), labelFmt: shortPct }}
+            lines={[{ values: npGrowthCapped, color: "#E8752A", axis: "left", label: "Profit growth", fmt: (v) => F.pct(v), labelFmt: shortPct }]}
+            leftFmt={(v) => v + "%"}
+            showLabels
           />
         </div>
       </div>

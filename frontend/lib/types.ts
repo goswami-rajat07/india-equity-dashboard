@@ -44,6 +44,7 @@ export interface DetailSeries {
   pe: (number | null)[];
   eps: (number | null)[];
   rev_growth: (number | null)[];
+  np_growth: (number | null)[];
   price_history: (number | null)[];
 }
 

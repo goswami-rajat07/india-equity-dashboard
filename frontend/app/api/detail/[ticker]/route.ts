@@ -24,6 +24,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ ticker:
     pe: hist.map((r) => r.valuation_multiple),
     eps: hist.map((r) => r.shares_cr && r.shares_cr > 0 ? +(r.net_profit / r.shares_cr).toFixed(2) : null),
     rev_growth: hist.map((r) => r.revenue_growth !== null ? +(r.revenue_growth * 100).toFixed(1) : null),
+    np_growth: hist.map((r, i) => {
+      if (i === 0) return null;
+      const prev = hist[i - 1].net_profit;
+      const curr = r.net_profit;
+      if (prev == null || prev === 0 || curr == null) return null;
+      return +((curr - prev) / Math.abs(prev) * 100).toFixed(1);
+    }),
     price_history: hist.map((r) => r.share_price),
   });
 }

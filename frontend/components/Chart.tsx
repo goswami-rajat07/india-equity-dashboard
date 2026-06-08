@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { PAL } from "./ui";
 
-interface BarSpec { values: (number | null)[]; color: string; label: string; fmt?: (v: number) => string; }
-interface LineSpec { values: (number | null)[]; color: string; axis: "left" | "right"; label: string; fmt?: (v: number) => string; dashFrom?: number; }
+interface BarSpec { values: (number | null)[]; color: string; label: string; fmt?: (v: number) => string; labelFmt?: (v: number) => string; }
+interface LineSpec { values: (number | null)[]; color: string; axis: "left" | "right"; label: string; fmt?: (v: number) => string; labelFmt?: (v: number) => string; dashFrom?: number; }
 
 interface ChartProps {
   categories: string[];
@@ -14,6 +14,7 @@ interface ChartProps {
   leftFmt?: (v: number) => string;
   rightFmt?: (v: number) => string;
   yZero?: boolean;
+  showLabels?: boolean;
 }
 
 function niceMax(v: number): number {
@@ -24,10 +25,10 @@ function niceMax(v: number): number {
   return step * pow;
 }
 
-export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rightFmt, yZero = false }: ChartProps) {
+export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rightFmt, yZero = false, showLabels = false }: ChartProps) {
   const [hi, setHi] = useState<number | null>(null);
   const W = 720, H = height;
-  const m = { t: 16, r: lines.some(l => l.axis === "right") ? 52 : 18, b: 30, l: 56 };
+  const m = { t: showLabels ? 26 : 16, r: lines.some(l => l.axis === "right") ? 52 : 18, b: 30, l: 56 };
   const iw = W - m.l - m.r, ih = H - m.t - m.b;
   const n = categories.length;
 
@@ -124,6 +125,22 @@ export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rig
           );
         })}
 
+        {showLabels && bars && bars.values.map((v, i) => {
+          if (v == null) return null;
+          const y0 = yL(0), y1 = yL(v);
+          const isNeg = v < 0;
+          const lf = bars.labelFmt ?? bars.fmt;
+          const txt = lf ? lf(v) : v.toFixed(0);
+          const labelY = isNeg
+            ? Math.min(H - m.b - 4, Math.max(y0, y1) + 11)
+            : Math.max(m.t + 9, Math.min(y0, y1) - 3);
+          return (
+            <text key={i} x={xBar(i)} y={labelY} textAnchor="middle" className="cax" style={{ fontSize: 9 }}>
+              {txt}
+            </text>
+          );
+        })}
+
         {lines.map((l, li) => {
           const scale = l.axis === "right" ? yR : yL;
           const p = buildPath(l.values, scale, l.dashFrom);
@@ -134,6 +151,21 @@ export function Chart({ categories, bars, lines = [], height = 230, leftFmt, rig
               {l.values.map((v, i) => v == null ? null : (
                 <circle key={i} cx={xAt(i)} cy={scale(v)} r={hi === i ? 4 : 2.6} fill="#fff" stroke={l.color} strokeWidth="2" />
               ))}
+              {showLabels && l.values.map((v, i) => {
+                if (v == null) return null;
+                const lf = l.labelFmt ?? l.fmt;
+                const txt = lf ? lf(v) : String(v);
+                const cy = scale(v);
+                const above = li % 2 === 0;
+                const labelY = above
+                  ? Math.max(m.t + 9, cy - 8)
+                  : Math.min(H - m.b - 4, cy + 15);
+                return (
+                  <text key={`lbl-${i}`} x={xAt(i)} y={labelY} textAnchor="middle" className="cax" style={{ fontSize: 9, fill: l.color }}>
+                    {txt}
+                  </text>
+                );
+              })}
             </g>
           );
         })}
